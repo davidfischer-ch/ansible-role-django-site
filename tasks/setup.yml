@@ -18,6 +18,7 @@
       loop:
         - { name: '{{ djsite_app_directory }}',                                    mode: 755 }
         - { name: '{{ djsite_app_directory }}/.ssh',                               mode: 700 }
+        - { name: '{{ djsite_app_directory }}/.tmp',                               mode: 700 }
         - { name: '{{ djsite_app_directory }}/data',                               mode: 755 }
         - { name: '{{ djsite_app_directory }}/source',                             mode: 755 }
         - { name: '{{ djsite_app_directory }}/releases',                           mode: 755 }
