@@ -1,27 +1,27 @@
-# dependencies
+# Dependencies
 djsite_packages:
   - gettext
 djsite_python_packages:
   - coverage
 djsite_file_requirements: []
 
-# instance parameters
+djsite_pip_path: '{{ python_pip_path }}'
+djsite_pip_umask: '{{ python_pip_umask }}'
+djsite_pip_environment: '{{ python_pip_environment }}'
+
+# Instance Parameters
 djsite_daemon_group: '{{ djsite_daemon_user }}'
 djsite_daemon_group_id: '{{ omit }}'
 djsite_daemon_user: '{{ djsite_instance_name }}'
 djsite_daemon_user_id: '{{ omit }}'
 djsite_debug_enabled: yes
+
+# Directories
 djsite_app_directory: '/var/app/{{ djsite_instance_name }}'
 djsite_data_directory: '/data/{{ djsite_instance_name }}'
 djsite_log_directory: '/var/log/{{ djsite_instance_name }}'
 
-# cache, database, storage and web server
-djsite_domain_old: ''
-djsite_redirect_ssl: no
-djsite_max_body_size: 100k
-djsite_ssl_enabled: no
-
-# logging
+# Logging
 django_log_rotations_frequency: daily
 djsite_log_rotations_max_count: 49
 djsite_log_rotations_config_file: logrotate.j2
@@ -29,7 +29,7 @@ djsite_log_rotations:
   - name: '{{ djsite_instance_name }}'
     config_file: '{{ djsite_log_rotations_config_file }}'
 
-# miscellaneous settings
+# Miscellaneous Settings
 djsite_bower_enabled: no
 djsite_celery_workers: {}
 djsite_compress_enabled: no
@@ -47,3 +47,9 @@ djsite_release_mode: normal
 djsite_release_ok_flag: ok.flag
 djsite_test_options: --failfast --no-input
 djsite_update_database_migrations: yes
+
+# Web
+djsite_domain_old: ''
+djsite_redirect_ssl: no
+djsite_max_body_size: 100k
+djsite_ssl_enabled: no

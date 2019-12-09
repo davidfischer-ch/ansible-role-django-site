@@ -75,18 +75,15 @@
       when: djsite_disallow_robots|bool
 
     - block:
-        - name: Create virtualenv
-          command: >
-            virtualenv -p python{{ djsite_config.python_version }}
-            --no-site-packages {{ djsite_app_directory }}/test/venv
-          args:
-            creates: '{{ djsite_app_directory }}/test/venv'
-
+        # Be aware of https://bugs.python.org/issue34224
         - name: Install Application Python packages
-          command: >
-            {{ djsite_app_directory }}/test/venv/bin/pip
-            install {{ item }}
-          loop: '{{ djsite_python_packages }}'
+          pip:
+            name: '{{ djsite_python_packages }}'
+            state: present
+            umask: '{{ djsite_pip_umask }}'
+            virtualenv: '{{ djsite_app_directory }}/test/venv'
+            virtualenv_python: python{{ djsite_config.python_version }}
+          environment: '{{ djsite_pip_environment }}'
 
         - name: Find Application requirement files
           find:
@@ -98,13 +95,17 @@
           register: _djsite_requirements
 
         - name: Install requirements into virtualenv
-          command: >
-            {{ djsite_app_directory }}/test/venv/bin/pip
-            install --exists-action w -r {{ item.path }}
+          pip:
+            requirements: '{{ item.path }}'
+            state: forcereinstall
+            umask: '{{ djsite_pip_umask }}'
+            virtualenv: '{{ djsite_app_directory }}/test/venv'
+            virtualenv_python: python{{ djsite_config.python_version }}
+          environment: '{{ djsite_pip_environment }}'
           loop: '{{ _djsite_requirements.files }}'
           loop_control:
             label: '{{ item.path }}'
-          when: "item.path.split('.')[-1] == 'pip' + djsite_config.python_version[0]"
+          when: item.path.split('.')[-1] == 'pip' + (djsite_config.python_version|string)[0]
 
         - name: Trigger virtualenv hook
           include_tasks: "{{ djsite_virtualenv_tasks_file or 'none.yml' }}"
