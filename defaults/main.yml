@@ -5,9 +5,9 @@ djsite_python_packages:
   - coverage
 djsite_file_requirements: []
 
-djsite_pip_path: '{{ python_pip_path }}'
-djsite_pip_umask: '{{ python_pip_umask }}'
 djsite_pip_environment: '{{ python_pip_environment }}'
+djsite_pip_hack_enabled: no  # Toggle hack for https://bugs.python.org/issue34224
+djsite_pip_umask: '{{ python_pip_umask }}'
 
 # Instance Parameters
 djsite_daemon_group: '{{ djsite_daemon_user }}'

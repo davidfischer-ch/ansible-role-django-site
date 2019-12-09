@@ -94,6 +94,13 @@
             use_regex: yes
           register: _djsite_requirements
 
+        - name: Hack for https://bugs.python.org/issue34224
+          file:
+            path: /usr/local/lib/python{{ djsite_config.python_version }}/lib2to3/
+            mode: o+rw
+            recurse: yes
+          become_user: root
+
         - name: Install requirements into virtualenv
           pip:
             requirements: '{{ item.path }}'
@@ -106,6 +113,13 @@
           loop_control:
             label: '{{ item.path }}'
           when: item.path.split('.')[-1] == 'pip' + (djsite_config.python_version|string)[0]
+
+        - name: Revert hack for https://bugs.python.org/issue34224
+          file:
+            path: /usr/local/lib/python{{ djsite_config.python_version }}/lib2to3/
+            mode: o-rw
+            recurse: yes
+          become_user: root
 
         - name: Trigger virtualenv hook
           include_tasks: "{{ djsite_virtualenv_tasks_file or 'none.yml' }}"
