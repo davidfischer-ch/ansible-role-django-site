@@ -7,7 +7,9 @@ djsite_file_requirements: []
 
 # instance parameters
 djsite_daemon_group: '{{ djsite_daemon_user }}'
+djsite_daemon_group_id: '{{ omit }}'
 djsite_daemon_user: '{{ djsite_instance_name }}'
+djsite_daemon_user_id: '{{ omit }}'
 djsite_debug_enabled: yes
 djsite_app_directory: '/var/app/{{ djsite_instance_name }}'
 djsite_data_directory: '/data/{{ djsite_instance_name }}'

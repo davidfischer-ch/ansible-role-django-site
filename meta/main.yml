@@ -12,6 +12,8 @@ dependencies:
   - role: daemon
     daemon_user: '{{ djsite_daemon_user }}'
     daemon_group: '{{ djsite_daemon_group }}'
+    daemon_user_id: '{{ djsite_daemon_user_id }}'
+    daemon_group_id: '{{ djsite_daemon_group_id }}'
     daemon_directory: '{{ djsite_app_directory }}'
     tags: [django-site, dependencies]
     when: djsite_role_action == 'setup'
