@@ -1,9 +1,13 @@
 ---
 
 - block:
+    - set_fact:
+        djsite_repository_local_directory: '{{ djsite_repository_url }}'
+      when: djsite_repository_is_local|bool
+
     - fail:
-        msg: 'Deploy code from a local directory to receive the generated migration files'
-      when: not djsite_repository_is_local|bool
+        msg: Please define djsite_repository_local_directory to receive the generated migration files
+      when: djsite_repository_local_directory is undefined
 
     - name: Make database migrations
       command: >
@@ -25,7 +29,7 @@
     - name: Copy the database migrations in the local machine
       synchronize:
         src: '{{ djsite_app_directory }}/test/server/{{ item }}/migrations/'
-        dest: '{{ djsite_repository_url }}/{{ djsite_config.source_path }}/{{ item }}/migrations/'
+        dest: '{{ djsite_repository_local_directory }}/{{ djsite_config.source_path }}/{{ item }}/migrations/'
         archive: yes
         checksum: yes
         delete: yes
