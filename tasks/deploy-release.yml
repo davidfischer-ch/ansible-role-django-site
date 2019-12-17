@@ -6,6 +6,7 @@
         repo: '{{ djsite_repository_url }}'
         dest: '{{ djsite_app_directory }}/source'
         force: yes
+        umask: '{{ djsite_source_umask }}'
         version: '{{ djsite_version }}'
       environment:
         # Workaroud for https://github.com/ansible/ansible/issues/33947

@@ -22,6 +22,8 @@ djsite_app_directory: '/var/app/{{ djsite_instance_name }}'
 djsite_data_directory: '/data/{{ djsite_instance_name }}'
 djsite_log_directory: '/var/log/{{ djsite_instance_name }}'
 
+djsite_source_umask: '022'
+
 # Logging
 django_log_rotations_frequency: daily
 djsite_log_rotations_max_count: 49
