@@ -1,10 +1,11 @@
 # Dependencies
 djsite_packages:
-  - gettext
+  - gettext   # To generate translations
+  - graphviz  # To generate graphs of the models
 djsite_python_packages:
   - coverage
-djsite_file_requirements: []
 
+# Python Package Manager
 djsite_pip_environment: '{{ python_pip_environment }}'
 djsite_pip_hack_enabled: no  # Toggle hack for https://bugs.python.org/issue34224
 djsite_pip_umask: '{{ python_pip_umask }}'
