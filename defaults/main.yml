@@ -50,9 +50,3 @@ djsite_release_mode: normal
 djsite_release_ok_flag: ok.flag
 djsite_test_options: --failfast --no-input
 djsite_update_database_migrations: yes
-
-# Web
-djsite_domain_old: ''
-djsite_redirect_ssl: no
-djsite_max_body_size: 100k
-djsite_ssl_enabled: no

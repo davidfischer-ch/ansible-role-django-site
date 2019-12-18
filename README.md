@@ -146,12 +146,11 @@ source_path: src/myproject
         name: '{{ djsite_instance_name }}'
         config_file: '{{ roles_directory }}/django-site/templates/example.nginx.config.conf.j2'
         debug: '{{ djsite_debug_enabled|bool }}'
-        domain_old: '{{ djsite_domain_old }}'
         domains: '{{ djsite_domains }}'
-        max_body_size: '{{ djsite_max_body_size }}'
-        redirect_ssl: '{{ djsite_redirect_ssl|bool }}'
-        with_dhparam: '{{ djsite_ssl_enabled|bool }}'
-        with_ssl: '{{ djsite_ssl_enabled|bool }}'
+        max_body_size: 100k
+        redirect_ssl: yes
+        with_dhparam: yes
+        with_ssl: yes
 
     uwsgi_apps:
       application:
