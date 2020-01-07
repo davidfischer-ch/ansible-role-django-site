@@ -19,6 +19,7 @@ djsite_role_actions:
   - local-backup
   - local-restore
   - manage
+  - migrate-database
   - none
   - setup
   - update-migrations

@@ -1,0 +1,29 @@
+---
+
+- block:
+    - name: Migrate the database
+      django_manage:
+        command: migrate
+        app_path: '{{ djsite_app_directory }}/test/server'
+        virtualenv: '{{ djsite_app_directory }}/test/venv'
+
+    - name: Create the super-user
+      shell: >
+        echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('{{ djsite_superuser.name }}', '{{ djsite_superuser.email }}', '{{ djsite_superuser.password }}')" | {{ djsite_app_directory }}/test/venv/bin/python ./manage.py shell
+      args:
+        chdir: '{{ djsite_app_directory }}/test/server'
+      changed_when: >
+        _djsite_admin is success
+        and 'already exists' not in _djsite_admin.stderr
+        and 'IntegrityError' not in _djsite_admin.stderr
+      diff: no
+      failed_when: >
+        _djsite_admin is failure
+        and 'already exists' not in _djsite_admin.stderr
+        and 'IntegrityError' not in _djsite_admin.stderr
+      # no_log: yes
+      register: _djsite_admin
+  become: yes
+  become_user: '{{ djsite_daemon_user }}'
+  tags: [django-site, database, update]  # FIXME Remove when this is fixed https://github.com/ansible/ansible/issues/30882
+  when: djsite_is_master|bool
