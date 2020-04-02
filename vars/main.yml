@@ -56,6 +56,8 @@ djsite_rsync_test_excludes:  # source -> unit-test directory
   - '*.socket'
   - '*.sqlite3'
   - __pycache__
+  # IDEs
+  - .idea
   # Garbage
   - '._*'
   - '*~'
