@@ -24,6 +24,8 @@ djsite_log_directory: '/var/log/{{ djsite_instance_name }}'
 
 djsite_source_umask: '022'
 
+djsite_touch_reload_file: '{{ djsite_app_directory }}/run/uwsgi.reload'
+
 # Logging
 django_log_rotations_frequency: daily
 djsite_log_rotations_max_count: 49

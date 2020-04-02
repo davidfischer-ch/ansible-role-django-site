@@ -9,7 +9,7 @@
 
     - name: Trigger application reload
       file:
-        name: '{{ djsite_app_directory }}/run/uwsgi.reload'
+        name: '{{ djsite_touch_reload_file }}'
         mode: 0644
         state: touch
   become: yes
