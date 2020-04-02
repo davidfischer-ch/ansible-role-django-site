@@ -10,7 +10,9 @@
     - name: Trigger application reload
       file:
         name: '{{ djsite_touch_reload_file }}'
-        mode: 0644
+        owner: '{{ djsite_touch_reload_owner }}'
+        group: '{{ djsite_touch_reload_group }}'
+        mode: '{{ djsite_touch_reload_mode }}'
         state: touch
   become: yes
   become_user: root

@@ -24,8 +24,6 @@ djsite_log_directory: '/var/log/{{ djsite_instance_name }}'
 
 djsite_source_umask: '022'
 
-djsite_touch_reload_file: '{{ djsite_app_directory }}/run/uwsgi.reload'
-
 # Logging
 django_log_rotations_frequency: daily
 djsite_log_rotations_max_count: 49
@@ -33,6 +31,12 @@ djsite_log_rotations_config_file: logrotate.j2
 djsite_log_rotations:
   - name: '{{ djsite_instance_name }}'
     config_file: '{{ djsite_log_rotations_config_file }}'
+
+# Touch Reload
+djsite_touch_reload_file: '{{ djsite_app_directory }}/run/uwsgi.reload'
+djsite_touch_reload_owner: root
+djsite_touch_reload_group: root
+djsite_touch_reload_mode: 0644
 
 # Miscellaneous Settings
 djsite_bower_enabled: no
