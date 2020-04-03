@@ -56,3 +56,10 @@ djsite_release_mode: normal
 djsite_release_ok_flag: ok.flag
 djsite_test_options: --failfast --no-input
 djsite_update_database_migrations: yes
+
+# Application Process
+djsite_process_config_file: example.uvicorn.app.conf.j2
+djsite_process_count: 4
+djsite_process_enabled: no  # disabled if you rely on uWSGI role for example
+djsite_process_options: []  # e.g. for uvicorn: [--log-level warning, --limit-concurrency 10]
+djsite_process_port: 8000

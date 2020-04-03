@@ -203,6 +203,41 @@
   become: yes
   tags: update
 
+# Application Process
+
+- block:
+    - name: Remove Application process configuration
+      file:
+        path: /etc/supervisor/conf.d/{{ djsite_instance_name }}-process.conf
+        state: absent
+      when: not djsite_process_enabled|bool
+
+    - name: Configure Application process
+      template:
+        src: '{{ djsite_process_config_file }}'
+        dest: /etc/supervisor/conf.d/{{ djsite_instance_name }}-process.conf
+        mode: 0644
+      notify: restart application process
+      when: djsite_process_enabled|bool
+
+    - name: Setup Application process
+      supervisorctl:
+        name: '{{ djsite_instance_name }}-process:'
+        state: '{{ item }}'
+      loop:
+        - "{{ djsite_process_enabled|bool|ternary('present', 'absent') }}"
+  become: yes
+  tags: [applications, config]
+
+- name: Toggle Application process
+  supervisorctl:
+    name: '{{ djsite_instance_name }}-process:'
+    state: '{{ item }}'
+  become: yes
+  loop:
+    - "{{ djsite_process_enabled|bool|ternary('started', 'absent') }}"
+  tags: [applications, services]
+
 # Celery Workers
 
 - block:
