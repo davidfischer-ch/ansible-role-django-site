@@ -33,7 +33,7 @@ djsite_log_rotations:
     config_file: '{{ djsite_log_rotations_config_file }}'
 
 # Touch Reload
-djsite_touch_reload_file: '{{ djsite_app_directory }}/run/uwsgi.reload'
+djsite_touch_reload_file: "{{ '' if djsite_process_enabled|bool else djsite_app_directory+'/run/uwsgi.reload' }}"
 djsite_touch_reload_owner: root
 djsite_touch_reload_group: root
 djsite_touch_reload_mode: 0644
@@ -63,3 +63,4 @@ djsite_process_count: '{{ 2 * ansible_processor_count }}'
 djsite_process_enabled: no  # disabled if you rely on uWSGI role for example
 djsite_process_options: []  # e.g. for uvicorn: [--log-level warning, --limit-concurrency 10]
 djsite_process_port: 8000
+djsite_process_reload_signal: SIGTERM

@@ -20,3 +20,4 @@
     name: '{{ djsite_instance_name }}-process:'
     state: restarted
   become: yes
+  when: djsite_process_enabled|bool

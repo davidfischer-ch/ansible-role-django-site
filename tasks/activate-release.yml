@@ -7,12 +7,20 @@
         dest: '{{ djsite_app_directory }}/production'
         state: link
 
-    - name: Trigger application reload
+    - name: Trigger Application server reload
       file:
         name: '{{ djsite_touch_reload_file }}'
         owner: '{{ djsite_touch_reload_owner }}'
         group: '{{ djsite_touch_reload_group }}'
         mode: '{{ djsite_touch_reload_mode }}'
         state: touch
+      when: djsite_touch_reload_file|length > 0
+
+    - name: Trigger Application process reload
+      supervisorctl:
+        name: '{{ djsite_instance_name }}-process:'
+        signal: '{{ djsite_process_reload_signal }}'
+        state: signalled
+      when: djsite_process_enabled|bool
   become: yes
   become_user: root
