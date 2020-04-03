@@ -73,7 +73,7 @@ custom_applications:
   - offices
   - pages
   - publications
-python_version: '3.5'
+python_version: '3.6'
 source_path: src/myproject
 ```
 
@@ -162,6 +162,46 @@ source_path: src/myproject
         project: '{{ djsite_project }}'
         python_version: python
         limit_as: 2048
+```
+
+If you want to replace uWSGI by Uvicorn:
+
+```
+(...)
+
+- hosts:
+    - my-site-web-group
+  roles:
+    - django-site
+    - nginx
+  vars:
+    supervisor_daemon_mode: systemv
+    supervisor_username: kikouman
+    supervisor_password: kikoupass
+    supervisor_version: 3.3.4  # 10/12/2018
+
+    djsite_role_action: setup
+    djsite_sass_enabled: yes
+
+    djsite_process_config_file: example.uvicorn.app.conf.j2
+    djsite_process_count: 2
+    djsite_process_enabled: yes
+    djsite_process_options:
+      - --interface asgi3
+      - --log-level warning
+
+    nginx_daemon_mode: supervisor
+    nginx_version: release-1.13.6  # 19/11/2017
+    nginx_sites:
+      site:
+        name: '{{ djsite_instance_name }}'
+        config_file: '{{ roles_directory }}/django-site/templates/example.nginx.config.conf.j2'
+        debug: '{{ djsite_debug_enabled|bool }}'
+        domains: '{{ djsite_domains }}'
+        max_body_size: 100k
+        redirect_ssl: yes
+        with_dhparam: yes
+        with_ssl: yes
 ```
 
 ## License
