@@ -1,0 +1,28 @@
+; ===================================================================
+;  django application {{ djsite_instance_name }} uvicorn application
+; ===================================================================
+
+[fcgi-program:{{ djsite_instance_name }}-process]
+
+environment=LANG={{ locale }},LC_ALL={{ locale }},LC_LANG={{ locale }}
+socket  = tcp://localhost:{{ djsite_process_port|int }}
+command = {{ djsite_app_directory }}/production/venv/bin/uvicorn --fd 0 {{ djsite_project }}.asgi:application {{ djsite_process_options|join(' ') }}
+
+directory      = {{ djsite_app_directory }}/production/server/
+user           = {{ djsite_daemon_user }}
+group          = {{ djsite_daemon_group }}
+numprocs       = {{ djsite_process_count|int }}
+process_name   = {{ djsite_instance_name }}-process-%(process_num)d
+stdout_logfile = {{ djsite_log_directory }}/process-%(process_num)d-stdout.log
+stderr_logfile = {{ djsite_log_directory }}/process-%(process_num)d-stderr.log
+autostart      = true
+autorestart    = true
+startsecs      = 10
+stopwaitsecs   = 60
+
+; When resorting to send SIGKILL to the program to terminate it send SIGKILL to its whole process group instead,
+; taking care of its children as well.
+killasgroup = true
+
+; if uvicorn is supervised, set its priority higher so it starts first.
+priority = 998

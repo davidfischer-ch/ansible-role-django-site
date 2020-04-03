@@ -14,3 +14,10 @@
   loop_control:
     label: '{{ item.value.name }}'
   with_dict: '{{ djsite_celery_workers }}'
+
+- name: restart application process
+  supervisorctl:
+    name: '{{ djsite_instance_name }}-process:'
+    state: restarted
+  become: yes
+  when: djsite_process_enabled|bool

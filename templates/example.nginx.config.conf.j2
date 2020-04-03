@@ -1,11 +1,26 @@
-upstream uwsgi-{{ item.value.name }} {
-    server unix:///run/uwsgi/app/{{ item.value.name }}/socket;
+{% if djsite_process_enabled|bool %}
+upstream {{ djsite_instance_name|replace('-', '_') }}_process {
+    server 127.0.0.1:{{ djsite_process_port|int }};
+    # tcp://localhost:{{ djsite_process_port|int }};
 }
+{% else %}
+upstream {{ djsite_instance_name|replace('-', '_') }}_uwsgi {
+    server unix://{{ djsite_app_directory }}/run/uwsgi.socket;
+}
+{% endif %}
 
-{% include 'templates/site.reject-unkown.conf.j2' %}
+server {
+    {% include 'templates/site.geoip-blocking.conf.j2' %}
+
+    # Security - http://nginx.org/en/docs/http/request_processing.html
+    listen {{ nginx_port|int }};
+    return 444;
+}
 
 {% if item.value.domain_old|length > 0 %}
 server {
+    {% include 'templates/site.geoip-blocking.conf.j2' %}
+
     listen {{ item.value.with_ssl|bool|ternary(nginx_port_ssl, nginx_port)|int }};
     server_name {{ item.value.domain_old }};
     rewrite ^ $scheme://{{ item.value.domains|first }}$request_uri permanent;
@@ -14,13 +29,23 @@ server {
 
 {% if item.value.with_ssl|bool and item.value.redirect_ssl|bool %}
 server {
+    {% include 'templates/site.geoip-blocking.conf.j2' %}
+
     listen {{ nginx_port|int }};
     server_name {{ item.value.domains|join(' ') }};
     rewrite ^ https://$http_host$request_uri? permanent;
 }
 {% endif %}
 
+# https://docs.nginx.com/nginx/admin-guide/monitoring/logging/#enabling-conditional-logging
+# map $status $condition {
+#     ~^[23] 0;
+#     default 1;
+# }
+
 server {
+    {% include 'templates/site.geoip-blocking.conf.j2' %}
+
     {% if item.value.with_ssl|bool %}
     listen {{ nginx_port_ssl|int }} {{ item.value.with_http2|bool|ternary('ssl http2', '') }};
     {% include 'templates/site.ssl.conf.j2' %}
@@ -28,24 +53,22 @@ server {
     listen {{ nginx_port|int }};
     {% endif %}
 
-    {% include 'templates/site.real_ip.conf.j2' %}
-
-    {% if not item.value.with_ssl|bool and item.value.redirect_ssl|bool %}
-    if ($http_x_forwarded_proto != 'https') {
-        rewrite ^ https://$host$request_uri? permanent;
-    }
-    {% endif %}
+    {% include 'templates/site.security-headers.conf.j2' %}
 
     server_name {{ item.value.domains|join(' ') }};
 
-    gzip off;  # Security - http://breachattack.com/resources/BREACH%20-%20SSL,%20gone%20in%2030%20seconds.pdf
+    gzip on;
     gzip_proxied any;
     gzip_types application/javascript application/json text/css text/javascript text/xml;
 
     client_max_body_size 0;
 
-    access_log /var/log/nginx/{{ item.value.name }}/access.log;
-    error_log /var/log/nginx/{{ item.value.name }}/error.log warn;
+    # Logging --------------------------------------------------------------------------------------
+
+    access_log /var/log/nginx/{{ item.value.name }}/access.log combined;
+    error_log  /var/log/nginx/{{ item.value.name }}/error.log  warn;
+
+    # Locations ------------------------------------------------------------------------------------
 
     location /robots.txt {
         alias {{ djsite_app_directory }}/production/server/robots.txt;
@@ -56,33 +79,49 @@ server {
     }
 
     location /static/ {
-        access_log  off;
-        autoindex   on;
+        access_log off;
+        autoindex  on;
         {% if not item.value.debug|bool %}
-        expires     max;
+        expires    max;
         {% endif %}
-        gzip        on;
-        sendfile    off;  # Avoid Nginx serving outdated static files
+        sendfile   off;  # Avoid Nginx serving outdated static files
+
         alias {{ djsite_app_directory }}/production/server/static/;
     }
 
     location /media/ {
-        access_log  off;
-        autoindex   on;
-        gzip        on;
-        sendfile    off;  # Avoid Nginx serving outdated static files
+        access_log off;
+        autoindex  on;
+        sendfile   off;  # Avoid Nginx serving outdated static files
+
         alias {{ djsite_app_directory }}/production/server/media/;
     }
 
     location / {
+        # Security - http://breachattack.com/resources/BREACH%20-%20SSL,%20gone%20in%2030%20seconds.pdf
+        # length_hiding on;
+        # length_hiding_max 512;
+
         client_max_body_size {{ item.value.max_body_size }};
+
+        {% if djsite_process_enabled|bool %}
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+        proxy_buffering  off;
+        proxy_pass       http://{{ djsite_instance_name|replace('-', '_') }}_process;
+        {% else %}
         include uwsgi_params;
-        uwsgi_pass uwsgi-{{ djsite_instance_name }};
+        uwsgi_pass {{ djsite_instance_name|replace('-', '_') }}_uwsgi;
+        {% endif %}
     }
 
-    location @uwsgi {
+    {% if not djsite_process_enabled|bool %}
+    location @{{ djsite_instance_name|replace('-', '_') }}_uwsgi {
         client_max_body_size {{ item.value.max_body_size }};
         include uwsgi_params;
-        uwsgi_pass uwsgi-{{ djsite_instance_name }};
+        uwsgi_pass {{ djsite_instance_name|replace('-', '_') }}_uwsgi;
     }
+    {% endif %}
 }

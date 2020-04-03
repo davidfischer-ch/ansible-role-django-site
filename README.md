@@ -73,7 +73,7 @@ custom_applications:
   - offices
   - pages
   - publications
-python_version: '3.5'
+python_version: '3.6'
 source_path: src/myproject
 ```
 
@@ -137,7 +137,53 @@ source_path: src/myproject
     supervisor_version: 3.3.4  # 10/12/2018
 
     djsite_role_action: setup
-    djsite_sass_enabled: yes
+
+    djsite_app_directory: '/var/app/{{ djsite_instance_name }}'
+    djsite_bower_enabled: yes
+    djsite_celery_workers:
+      default:
+        config_file: example.celery.worker.modern.conf.j2
+        name: default
+        queues:
+          - default
+        type: worker
+      beat:
+        config_file: example.celery.worker.modern.conf.j2
+        name: beat
+        type: beat
+    djsite_compress_enabled: yes
+    djsite_compress_offline: yes
+    djsite_coverage_minimum: 62
+    djsite_coverage_options:
+      - --branch
+      - --include=myapp/*
+      - --omit=*/migrations/*,*/tests/*
+    djsite_database_host: 127.0.0.1
+    djsite_database_name: myapp
+    djsite_database_port: '{{ postgresql_port|int }}'
+    djsite_database_user: admin
+    djsite_database_password: dbpass
+    djsite_debug_enabled: yes
+    djsite_domains:
+      - www.myapp.net
+      - '{{ ansible_host }}'
+      - 127.0.0.1
+    djsite_instance_name: myapp
+    djsite_max_releases: 3
+    djsite_project: MyApp
+    djsite_release_mode: normal
+    djsite_repository_url: git://some-repo.git
+    djsite_repository_version: master
+    djsite_secret_key: this-is-not-a-good-secret-key
+    djsite_settings_module: development
+    djsite_ssh_key_private: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    djsite_ssh_key_public: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+    djsite_standalone: yes
+    djsite_superuser:
+      name: super.man
+      email: super@myapp.net
+      password: superpass
+    djsite_test_options: --failfast --noinput
 
     nginx_daemon_mode: supervisor
     nginx_version: release-1.13.6  # 19/11/2017
@@ -162,6 +208,25 @@ source_path: src/myproject
         project: '{{ djsite_project }}'
         python_version: python
         limit_as: 2048
+```
+
+If you want to replace uWSGI by Uvicorn, simply disable uWSGI role and configuration, and add:
+
+```
+    djsite_process_config_file: example.uvicorn.app.conf.j2
+    djsite_process_count: '{{ 2 * ansible_processor_count }}'
+    djsite_process_enabled: yes
+    djsite_process_options:
+      - --interface asgi3
+      - --log-level warning
+```
+
+If you need to execute additional tasks on certain events, just do:
+
+```
+djsite_configure_tasks_file: '{{ playbook_dir }}/../app_tasks/configure-hook.yml'
+djsite_update_tasks_file: '{{ playbook_dir }}/../app_tasks/update-hook.yml'
+djsite_virtualenv_tasks_file: '{{ playbook_dir }}/../app_tasks/virtualenv-hook.yml'
 ```
 
 ## License
