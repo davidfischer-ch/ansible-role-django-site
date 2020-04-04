@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1
+
+### Fix and enhancements
+
+- Fix initial play
+
 ## v1.1.0
 
 ### Minor compatibilty breaks
