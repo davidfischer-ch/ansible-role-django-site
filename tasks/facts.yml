@@ -31,7 +31,7 @@
 
     - assert:
         that:
-          - djsite_version is defined
+          - djsite_repository_version is defined
       when: not djsite_repository_is_local|bool
 
     - assert:
@@ -47,4 +47,5 @@
       loop:
         - djsite_release_directory
         - djsite_repository_is_local
+        - djsite_repository_version
   tags: always
