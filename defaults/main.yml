@@ -5,6 +5,8 @@ djsite_packages:
 djsite_python_packages:
   - coverage
 
+djsite_default_python_executable: 'python{{ djsite_config.python_version }}'
+
 # Python Package Manager
 djsite_pip_environment: '{{ python_pip_environment }}'
 djsite_pip_hack_enabled: no  # Toggle hack for https://bugs.python.org/issue34224
