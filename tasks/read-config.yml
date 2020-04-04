@@ -25,15 +25,36 @@
         djsite_config: '{{ _djsite_config.stdout|from_yaml }}'
         djsite_git_log: '{{ _djsite_git_log.stdout_lines }}'
 
-    - debug:
+    - name: Show application configuration
+      debug:
         var: djsite_config
 
-    - assert:
+    - name: Check application configuration
+      assert:
         that:
           - djsite_config.configuration_templates is defined
           - djsite_config.custom_applications is defined
-          - python_versions is undefined or djsite_config.python_version in python_versions
           - djsite_config.source_path is defined
+
+    - name: Find required Python
+      command:
+        which {{ djsite_config.python_executable|default(djsite_default_python_executable) }}
+      changed_when: no
+      check_mode: no
+      register: _djsite_python_executable
+
+    - name: Set Python library path
+      set_fact:
+        djsite_python_executable: '{{ _djsite_python_executable.stdout }}'
+        djsite_python_library: "{{ _djsite_python_executable.stdout|regex_replace('bin', 'lib') }}"
+
+    - name: Show Detected Python executable
+      debug:
+        var: djsite_python_executable
+
+    - name: Show Detected Python library
+      debug:
+        var: djsite_python_library
   become: yes
   become_user: '{{ djsite_daemon_user }}'
   tags: always

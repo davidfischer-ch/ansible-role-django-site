@@ -7,7 +7,7 @@
         dest: '{{ djsite_app_directory }}/source'
         force: yes
         umask: '{{ djsite_source_umask }}'
-        version: '{{ djsite_version }}'
+        version: '{{ djsite_repository_version }}'
       environment:
         # Workaroud for https://github.com/ansible/ansible/issues/33947
         TMPDIR: '{{ djsite_app_directory }}/.tmp'
@@ -83,7 +83,7 @@
             state: present
             umask: '{{ djsite_pip_umask }}'
             virtualenv: '{{ djsite_app_directory }}/test/venv'
-            virtualenv_python: python{{ djsite_config.python_version }}
+            virtualenv_python: '{{ djsite_python_executable }}'
           environment: '{{ djsite_pip_environment }}'
 
         - name: Find Application requirement files
@@ -97,7 +97,7 @@
 
         - name: Hack for https://bugs.python.org/issue34224
           file:
-            path: /usr/local/lib/python{{ djsite_config.python_version }}/lib2to3/
+            path: '{{ djsite_python_library }}/lib2to3/'
             mode: o+rw
             recurse: yes
           become_user: root
@@ -108,7 +108,7 @@
             state: forcereinstall
             umask: '{{ djsite_pip_umask }}'
             virtualenv: '{{ djsite_app_directory }}/test/venv'
-            virtualenv_python: python{{ djsite_config.python_version }}
+            virtualenv_python: '{{ djsite_python_executable }}'
           environment: '{{ djsite_pip_environment }}'
           loop: '{{ _djsite_requirements.files }}'
           loop_control:
@@ -117,7 +117,7 @@
 
         - name: Revert hack for https://bugs.python.org/issue34224
           file:
-            path: /usr/local/lib/python{{ djsite_config.python_version }}/lib2to3/
+            path: '{{ djsite_python_library }}/lib2to3/'
             mode: o-rw
             recurse: yes
           become_user: root
