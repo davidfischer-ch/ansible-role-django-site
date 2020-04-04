@@ -195,11 +195,6 @@
 - block:
     - include_tasks: release-{{ djsite_release_mode }}.yml
     - import_tasks: sync-release.yml
-    - import_tasks: activate-release.yml
-      tags: activate
-
-    - import_tasks: cleanup-releases.yml
-      tags: cleanup
   become: yes
   tags: update
 
@@ -237,6 +232,17 @@
   loop:
     - "{{ djsite_process_enabled|bool|ternary('started', 'absent') }}"
   tags: [applications, services]
+
+# Release
+
+- block:
+    - import_tasks: activate-release.yml
+      tags: activate
+
+    - import_tasks: cleanup-releases.yml
+      tags: cleanup
+  become: yes
+  tags: update
 
 # Celery Workers
 
