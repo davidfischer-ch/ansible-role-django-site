@@ -1,7 +1,8 @@
 ---
 
 - block:
-    - assert:
+    - name: Check variables
+      assert:
         that:
           - djsite_configure_tasks_file is defined
           - djsite_database_host is defined
@@ -25,16 +26,19 @@
           - djsite_update_tasks_file is defined
           - djsite_virtualenv_tasks_file is defined
 
-    - set_fact:
+    - name: Set release directory and detect if repository is local
+      set_fact:
         djsite_release_directory: "{{ djsite_app_directory }}/{{ (djsite_release_mode == 'direct')|ternary('test', 'releases/'+djsite_release_timestamp) }}"
         djsite_repository_is_local: "{{ ':' not in djsite_repository_url }}"
 
-    - assert:
+    - name: Ensure version is defined if repository is remote
+      assert:
         that:
           - djsite_repository_version is defined
       when: not djsite_repository_is_local|bool
 
-    - assert:
+    - name: Ensure SSH variables are defined if repository is remote or has private requirements
+      assert:
         that:
           - djsite_repository_host is defined
           - djsite_repository_key is defined
@@ -42,7 +46,8 @@
           - djsite_ssh_key_public is defined
       when: not djsite_repository_is_local|bool or djsite_has_private_requirements|bool
 
-    - debug:
+    - name: Show repository variables
+      debug:
         var: '{{ item }}'
       loop:
         - djsite_release_directory

@@ -25,10 +25,12 @@
         djsite_config: '{{ _djsite_config.stdout|from_yaml }}'
         djsite_git_log: '{{ _djsite_git_log.stdout_lines }}'
 
-    - debug:
+    - name: Show application configuration
+      debug:
         var: djsite_config
 
-    - assert:
+    - name: Check application configuration
+      assert:
         that:
           - djsite_config.configuration_templates is defined
           - djsite_config.custom_applications is defined
