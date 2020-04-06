@@ -89,7 +89,6 @@
           when: djsite_database_dump_format == 'plain_text'
       tags: database
       when: djsite_is_master|bool
-
   always:
     - name: Remove temporary directory
       file:

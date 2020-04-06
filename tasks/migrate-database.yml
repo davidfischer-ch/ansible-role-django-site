@@ -25,5 +25,5 @@
       register: _djsite_admin
   become: yes
   become_user: '{{ djsite_daemon_user }}'
-  tags: [django-site, database, update]  # FIXME Remove when this is fixed https://github.com/ansible/ansible/issues/30882
+  tags: database
   when: djsite_is_master|bool

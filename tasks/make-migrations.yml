@@ -11,7 +11,8 @@
 
     - name: Make database migrations
       command: >
-        {{ djsite_app_directory }}/test/venv/bin/python manage.py makemigrations {{ djsite_config.custom_applications|join(' ') }}
+        {{ djsite_app_directory }}/test/venv/bin/python manage.py
+        makemigrations {{ djsite_config.custom_applications|join(' ') }}
       args:
         chdir: '{{ djsite_app_directory }}/test/server'
       changed_when: _djsite_make_migrations.stdout_lines|length > 1
@@ -43,4 +44,4 @@
       loop: '{{ djsite_config.custom_applications }}'
   become: yes
   become_user: '{{ djsite_daemon_user }}'
-  tags: [django-site, database, update]  # FIXME Remove when this is fixed https://github.com/ansible/ansible/issues/30882
+  tags: database
