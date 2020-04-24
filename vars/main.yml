@@ -22,6 +22,7 @@ djsite_role_actions:
   - local-backup
   - local-restore
   - manage
+  - make-messages
   - migrate-database
   - none
   - setup

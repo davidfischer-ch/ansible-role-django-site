@@ -1,0 +1,38 @@
+---
+
+- block:
+    - set_fact:
+        djsite_repository_local_directory: '{{ djsite_repository_url }}'
+      when: djsite_repository_is_local|bool
+
+    - fail:
+        msg: Please define djsite_repository_local_directory to receive the generated translation files
+      when: djsite_repository_local_directory is undefined
+
+    - import_tasks: read-config.yml
+
+    - name: Make messages
+      command: >
+        {{ djsite_app_directory }}/test/venv/bin/python ../manage.py makemessages --all
+      args:
+        chdir: '{{ djsite_app_directory }}/test/server/{{ item }}'
+      loop: '{{ djsite_config.custom_applications|list }}'
+
+    - name: Copy the messages in the local machine
+      synchronize:
+        src: '{{ djsite_app_directory }}/test/server/{{ item }}/locale/'
+        dest: '{{ djsite_repository_local_directory }}/{{ djsite_config.source_path }}/{{ item }}/locale/'
+        archive: yes
+        checksum: yes
+        delete: yes
+        mode: pull
+        rsync_opts:
+          - --omit-dir-times
+          - --exclude
+          - __pycache__/
+          - --exclude
+          - '*.pyc'
+      loop: '{{ djsite_config.custom_applications }}'
+  become: yes
+  become_user: '{{ djsite_daemon_user }}'
+  tags: database
