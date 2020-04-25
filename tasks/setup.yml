@@ -16,17 +16,26 @@
         mode: '{{ item.mode }}'
         state: directory
       loop:
-        - { name: '{{ djsite_app_directory }}',                                    mode: 755 }
-        - { name: '{{ djsite_app_directory }}/.ssh',                               mode: 700 }
-        - { name: '{{ djsite_app_directory }}/.tmp',                               mode: 700 }
-        - { name: '{{ djsite_app_directory }}/data',                               mode: 755 }
-        - { name: '{{ djsite_app_directory }}/source',                             mode: 755 }
-        - { name: '{{ djsite_app_directory }}/releases',                           mode: 755 }
-        - { name: '{{ djsite_app_directory }}/run',                                mode: 775 }
-        - { name: '{{ djsite_app_directory }}/test/server/bower/bower_components', mode: 755 }
-        - { name: '{{ djsite_data_directory }}/media',                             mode: 755 }
-        - { name: '{{ djsite_data_directory }}/releases',                          mode: 755 }
-        - { name: '{{ djsite_log_directory }}',                                    mode: 750 }
+        - { name: '{{ djsite_app_directory }}',             mode: 755 }
+        - { name: '{{ djsite_app_directory }}/.ssh',        mode: 700 }
+        - { name: '{{ djsite_app_directory }}/.tmp',        mode: 700 }
+        - { name: '{{ djsite_app_directory }}/data',        mode: 755 }
+        - { name: '{{ djsite_app_directory }}/source',      mode: 755 }
+        - { name: '{{ djsite_app_directory }}/releases',    mode: 755 }
+        - { name: '{{ djsite_app_directory }}/run',         mode: 775 }
+        - { name: '{{ djsite_app_directory }}/test/server', mode: 755 }
+        - { name: '{{ djsite_data_directory }}/media',      mode: 755 }
+        - { name: '{{ djsite_data_directory }}/releases',   mode: 755 }
+        - { name: '{{ djsite_log_directory }}',             mode: 750 }
+
+    - name: Create Bower components directory
+      file:
+        name: '{{ djsite_app_directory }}/test/server/bower/bower_components'
+        owner: '{{ djsite_daemon_user }}'
+        group: '{{ djsite_daemon_group }}'
+        mode: 0755
+        state: directory
+      when: djsite_bower_enabled|bool
 
     - name: Create link to Application media directory
       file:
@@ -70,7 +79,7 @@
       when: djsite_repository_is_local|bool and djsite_update_database_migrations|bool
 
     - block:
-        - name: Configure bower in non-interactive mode
+        - name: Configure Bower in non-interactive mode
           command: >
             {{ djsite_app_directory }}/test/venv/bin/python
             manage.py bower_install --traceback -- --config.interactive=false
@@ -83,7 +92,7 @@
           register: _djsite_bower_auto
           tags: config
 
-        - name: Download web (js) packages with bower
+        - name: Download web (js) packages with Bower
           command: >
             {{ djsite_app_directory }}/test/venv/bin/python
             manage.py bower_install --traceback -F
