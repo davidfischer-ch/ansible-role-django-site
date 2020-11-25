@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.3.0
+
+### Minor compatibility breaks
+
+- Do not execute unit-test during setup & update
+
+### Fix and enhancements
+
+- Add unit-test action
+
 ## v1.2.0
 
 ### Minor compatibility breaks
