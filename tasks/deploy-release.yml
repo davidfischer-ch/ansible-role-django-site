@@ -53,7 +53,7 @@
         _djsite_cleanup is failure and
         'No such file or directory' not in _djsite_cleanup.stderr
       register: _djsite_cleanup
-      tags: [update, unit-test-extra]
+      tags: update
 
     - name: Deploy the Application in the unit-test area
       command: >
@@ -63,7 +63,7 @@
         {{ djsite_rsync_test_excludes|format_items('--exclude={0}')|join(' ') }}
         {{ djsite_config.configuration_templates|format_items('--exclude {0}')|join(' ') }}
         --archive --checksum --delete --hard-links --links
-      tags: [update, unit-test-extra]
+      tags: update
 
     - name: Disallow robots
       template:
@@ -72,7 +72,7 @@
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
         mode: 0644
-      tags: [update, unit-test-extra]
+      tags: update
       when: djsite_disallow_robots|bool
 
     - block:
@@ -127,9 +127,10 @@
       tags: virtualenv
 
     - import_tasks: configure.yml
-      tags: [config, unit-test-extra, update]
+      tags: [config, update]
 
     - name: Trigger update hook
       include_tasks: "{{ djsite_update_tasks_file or 'none.yml' }}"
   become: yes
   become_user: '{{ djsite_daemon_user }}'
+  when: djsite_is_master|bool

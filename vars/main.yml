@@ -27,6 +27,7 @@ djsite_role_actions:
   - migrate-database
   - none
   - setup
+  - unit-test
 
 djsite_rsync_backup_excludes:  # production -> backup
   - /server/media/

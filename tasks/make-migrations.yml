@@ -1,3 +1,5 @@
+# Action
+
 ---
 
 - block:
@@ -47,3 +49,4 @@
   become: yes
   become_user: '{{ djsite_daemon_user }}'
   tags: database
+  when: djsite_is_master|bool

@@ -1,3 +1,6 @@
+# Action
+
+---
 
 - block:
     - name: Execute Django management command
