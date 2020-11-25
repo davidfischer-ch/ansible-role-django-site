@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2.0
+
+### Minor compatibility breaks
+
+- Replace update-migrations action by make-migrations
+- The make-* actions deploy the release (do not activate it) before running its "action"
+- Remove make-migrations from the setup workflow, it has to be executed as an independent action
+- Remove `djsite_update_database_migrations` variable accordingly to these behavioral changes
+
 ## v1.1.1
 
 ### Fix and enhancements
