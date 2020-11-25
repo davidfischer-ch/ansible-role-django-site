@@ -1,0 +1,69 @@
+---
+
+- block:
+    - block:
+        - name: Configure Bower in non-interactive mode
+          command: >
+            {{ djsite_app_directory }}/test/venv/bin/python
+            manage.py bower_install --traceback -- --config.interactive=false
+          args:
+            chdir: '{{ djsite_app_directory }}/test/server'
+          changed_when: _djsite_bower_auto is success
+          failed_when: >
+            _djsite_bower_auto is failure and
+            'unrecognized arguments' not in _djsite_bower_auto.stderr
+          register: _djsite_bower_auto
+          tags: config
+
+        - name: Download web (js) packages with Bower
+          command: >
+            {{ djsite_app_directory }}/test/venv/bin/python
+            manage.py bower_install --traceback -F
+          args:
+            chdir: '{{ djsite_app_directory }}/test/server'
+          failed_when: "'error' in _djsite_bower_install.stderr"
+          register: _djsite_bower_install
+          tags: packages
+
+        - debug:
+            var: _djsite_bower_install.stdout_lines
+          tags: packages
+      when: djsite_bower_enabled|bool
+
+    - name: Compile the assets (SASS/SCSS)
+      django_manage:
+        command: compilescss
+        app_path: '{{ djsite_app_directory }}/test/server'
+        virtualenv: '{{ djsite_app_directory }}/test/venv'
+      when: djsite_sass_enabled|bool
+
+    - name: Collect the static files
+      django_manage:
+        command: collectstatic
+        app_path: '{{ djsite_app_directory }}/test/server'
+        virtualenv: '{{ djsite_app_directory }}/test/venv'
+
+    - name: Compress the assets (CSS/JS)
+      django_manage:
+        command: compress
+        app_path: '{{ djsite_app_directory }}/test/server'
+        virtualenv: '{{ djsite_app_directory }}/test/venv'
+      when: djsite_compress_enabled|bool and djsite_compress_offline|bool
+
+    - name: Compile translations
+      command: >
+        {{ djsite_app_directory }}/test/venv/bin/python
+        ../manage.py compilemessages
+      args:
+        chdir: '{{ djsite_app_directory }}/test/server/{{ item }}'
+      loop: '{{ djsite_config.custom_applications }}'
+
+    - name: Check the applications for common errors
+      command: >
+        {{ djsite_app_directory }}/test/venv/bin/python
+        manage.py check {{ djsite_config.custom_applications|join(' ')}}
+      args:
+        chdir: '{{ djsite_app_directory }}/test/server'
+  become: yes
+  become_user: '{{ djsite_daemon_user }}'
+  when: djsite_is_master|bool
