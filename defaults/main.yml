@@ -57,7 +57,6 @@ djsite_sass_enabled: no
 djsite_release_mode: normal
 djsite_release_ok_flag: ok.flag
 djsite_test_options: --failfast --no-input
-djsite_update_database_migrations: yes
 
 # Application Process
 djsite_process_config_file: example.uvicorn.app.conf.j2

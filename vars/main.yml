@@ -23,10 +23,10 @@ djsite_role_actions:
   - local-restore
   - manage
   - make-messages
+  - make-migrations
   - migrate-database
   - none
   - setup
-  - update-migrations
 
 djsite_rsync_backup_excludes:  # production -> backup
   - /server/media/

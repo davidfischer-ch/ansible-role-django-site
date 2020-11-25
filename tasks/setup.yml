@@ -74,9 +74,6 @@
 
 - block:
     - import_tasks: deploy-release.yml
-    - include_tasks: make-migrations.yml
-      tags: database
-      when: djsite_repository_is_local|bool and djsite_update_database_migrations|bool
 
     - block:
         - name: Configure Bower in non-interactive mode
