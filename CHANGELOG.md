@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.4.0
+
+### Minor compatibility breaks
+
+- Drop old Celery example configurations
+
+### Fix and enhancements
+
+- Make Celery example configuration compatible with 5+
+
 ## v1.3.0
 
 ### Minor compatibility breaks
