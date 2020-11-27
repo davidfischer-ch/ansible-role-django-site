@@ -142,13 +142,13 @@ source_path: src/myproject
     djsite_bower_enabled: yes
     djsite_celery_workers:
       default:
-        config_file: example.celery.worker.modern.conf.j2
+        config_file: example.celery.worker.conf.j2
         name: default
         queues:
           - default
         type: worker
       beat:
-        config_file: example.celery.worker.modern.conf.j2
+        config_file: example.celery.worker.conf.j2
         name: beat
         type: beat
     djsite_compress_enabled: yes
