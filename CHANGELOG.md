@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.5.0
+
+### Minor compatibility breaks
+
+- Fix variable name `django_log_rotations_frequency` -> `djsite_log_rotations_frequency`
+
 ## v1.4.0
 
 ### Minor compatibility breaks
