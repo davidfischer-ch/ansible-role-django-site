@@ -65,3 +65,7 @@ djsite_process_enabled: no  # disabled if you rely on uWSGI role for example
 djsite_process_options: []  # e.g. for uvicorn: [--log-level warning, --limit-concurrency 10]
 djsite_process_port: 8000
 djsite_process_reload_signal: SIGTERM
+
+# Application's environment variables
+djsite_environment_file: env.j2
+djsite_environment_variables: {}

@@ -20,6 +20,15 @@
       loop_control:
         label: '{{ item.item }}'
 
+    - name: Generate .env
+      template:
+        src: '{{ djsite_environment_file }}'
+        dest: '{{ djsite_app_directory }}/test/server/{{ djsite_project }}/.env'
+        owner: '{{ djsite_daemon_user }}'
+        group: '{{ djsite_daemon_group }}'
+        mode: 0640
+      no_log: yes
+
     - name: Trigger configure hook
       include_tasks: "{{ djsite_configure_tasks_file or 'none.yml' }}"
   become: yes
