@@ -1,6 +1,6 @@
 <uwsgi>
     <plugin>{{ item.value.python_version }}</plugin>
-    <env>LC_ALL={{ locale }}</env>
+    <env>LANG={{ locale }},LC_ALL={{ locale }},LC_LANG={{ locale }},</env>
     <username>{{ item.value.user }}</username>
     <uid>{{ item.value.user }}</uid>
     <gid>{{ item.value.group }}</gid>

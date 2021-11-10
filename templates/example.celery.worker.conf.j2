@@ -4,7 +4,7 @@
 
 [program:{{ djsite_instance_name }}-celery-{{ item.value.name }}]
 
-environment=LANG={{ locale }},LC_ALL={{ locale }},LC_LANG={{ locale }}
+environment=LANG={{ locale }},LC_ALL={{ locale }},LC_LANG={{ locale }},{{ (item.value.environ|default({})).items()|sort|format_items('{0[0]}="{0[1]}"')|join(',') }}
 {% if item.value.type == 'beat' %}
 command = {{ djsite_app_directory }}/production/venv/bin/celery --app {{ djsite_project }} beat --loglevel INFO --schedule {{ djsite_app_directory }}/data/celery-beat.db
 {% else %}

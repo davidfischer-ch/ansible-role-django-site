@@ -1,9 +1,11 @@
 [uwsgi]
-{% for key, value in (item.value.environ|default({})).items() %}
+{% for key, value in (item.value.environ|default({})).items()|sort %}
 env = {{ key }}={{ value }}
 {% endfor %}
 
+env = LANG={{ locale }}
 env = LC_ALL={{ locale }}
+env = LC_LANG={{ locale }}
 username = {{ item.value.user }}
 uid = {{ item.value.user }}
 gid = {{ item.value.group }}
