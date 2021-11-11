@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.5.1
+
+### Fix and enhancements
+
+- Generate .env file
+- Refresh example templates
+
 ## v1.5.0
 
 ### Minor compatibility breaks
