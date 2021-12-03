@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.5.2
+
+### Fix and enhancements
+
+- Fix initial run
+
 ## v1.5.1
 
 ### Fix and enhancements
