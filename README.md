@@ -1,16 +1,9 @@
-# Ansible Role django-site
+# Ansible Role Django Site
 
 Library of Ansible plugins and roles for deploying various services.
 See [ansible-roles](https://github.com/davidfischer-ch/ansible-roles) for additional documentation.
 
-This repository hosts the role django-site and may depend of other roles and plugins of the library.
-
-## Status
-
-Not (yet) implemented:
-
-* Role actions such as configure, ...
-* Mounting the data directory. I think this roles should not take this responsibility. When deploying more than one web host, make sure your PlayBook mount the data directory prior to calling this role.
+This repository hosts the role Django Site and may depend of other roles and plugins of the library.
 
 ## Dependencies
 
