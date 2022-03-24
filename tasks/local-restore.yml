@@ -67,10 +67,10 @@
                     --port {{ djsite_database_port }} \
                     --username {{ djsite_database_user }} \
                     {{ _tmp_directory }}/{{ _dump_format.path }}
-              register: djsite_db_restore
+              register: _djsite_db_restore
 
             - debug:
-                var: _socialease_db_restore.stdout_lines
+                var: _djsite_db_restore.stdout_lines
           when: djsite_database_dump_format != 'plain_text'
 
         - block:
@@ -87,7 +87,7 @@
               register: _djsite_db_restore
 
             - debug:
-                var: _socialease_db_restore.stdout_lines
+                var: _djsite_db_restore.stdout_lines
           when: djsite_database_dump_format == 'plain_text'
       tags: database
       when: djsite_is_master|bool
