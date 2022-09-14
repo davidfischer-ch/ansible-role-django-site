@@ -38,7 +38,7 @@ djsite_log_rotations:
 djsite_touch_reload_file: "{{ '' if djsite_process_enabled|bool else djsite_app_directory+'/run/uwsgi.reload' }}"
 djsite_touch_reload_owner: root
 djsite_touch_reload_group: root
-djsite_touch_reload_mode: 0644
+djsite_touch_reload_mode: '644'
 
 # Miscellaneous Settings
 djsite_bower_enabled: no

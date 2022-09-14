@@ -71,7 +71,7 @@
         dest: '{{ djsite_app_directory }}/test/server/robots.txt'
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
-        mode: 0644
+        mode: '644'
       tags: update
       when: djsite_disallow_robots|bool
 

@@ -15,7 +15,7 @@
         dest: '{{ djsite_app_directory }}/test/server/{{ djsite_project }}/{{ item.item }}'
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
-        mode: 0640
+        mode: '640'
       loop: '{{ _djsite_config_templates.results }}'
       loop_control:
         label: '{{ item.item }}'
@@ -26,7 +26,7 @@
         dest: '{{ djsite_app_directory }}/test/server/{{ djsite_project }}/.env'
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
-        mode: 0640
+        mode: '640'
       no_log: yes
 
     - name: Trigger configure hook

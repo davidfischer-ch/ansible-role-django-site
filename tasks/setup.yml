@@ -18,24 +18,24 @@
         mode: '{{ item.mode }}'
         state: directory
       loop:
-        - { name: '{{ djsite_app_directory }}',             mode: 0755 }
-        - { name: '{{ djsite_app_directory }}/.ssh',        mode: 0700 }
-        - { name: '{{ djsite_app_directory }}/.tmp',        mode: 0700 }
-        - { name: '{{ djsite_app_directory }}/data',        mode: 0755 }
-        - { name: '{{ djsite_app_directory }}/source',      mode: 0755 }
-        - { name: '{{ djsite_app_directory }}/releases',    mode: 0755 }
-        - { name: '{{ djsite_app_directory }}/run',         mode: 0775 }
-        - { name: '{{ djsite_app_directory }}/test/server', mode: 0755 }
-        - { name: '{{ djsite_data_directory }}/media',      mode: 0755 }
-        - { name: '{{ djsite_data_directory }}/releases',   mode: 0755 }
-        - { name: '{{ djsite_log_directory }}',             mode: 0750 }
+        - { name: '{{ djsite_app_directory }}',             mode: '755' }
+        - { name: '{{ djsite_app_directory }}/.ssh',        mode: '700' }
+        - { name: '{{ djsite_app_directory }}/.tmp',        mode: '700' }
+        - { name: '{{ djsite_app_directory }}/data',        mode: '755' }
+        - { name: '{{ djsite_app_directory }}/source',      mode: '755' }
+        - { name: '{{ djsite_app_directory }}/releases',    mode: '755' }
+        - { name: '{{ djsite_app_directory }}/run',         mode: '775' }
+        - { name: '{{ djsite_app_directory }}/test/server', mode: '755' }
+        - { name: '{{ djsite_data_directory }}/media',      mode: '755' }
+        - { name: '{{ djsite_data_directory }}/releases',   mode: '755' }
+        - { name: '{{ djsite_log_directory }}',             mode: '750' }
 
     - name: Create Bower components directory
       file:
         name: '{{ djsite_app_directory }}/test/server/bower/bower_components'
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
-        mode: 0755
+        mode: '755'
         state: directory
       when: djsite_bower_enabled|bool
 
@@ -53,7 +53,7 @@
             dest: '{{ djsite_app_directory }}/.ssh/{{ item.name }}'
             owner: '{{ djsite_daemon_user }}'
             group: '{{ djsite_daemon_group }}'
-            mode: 0600
+            mode: '600'
           diff: not item.hidden|bool
           loop:
             - { path: '{{ djsite_ssh_key_private }}', name: 'id_rsa',     hidden: yes }
@@ -96,7 +96,7 @@
       template:
         src: '{{ djsite_process_config_file }}'
         dest: /etc/supervisor/conf.d/{{ djsite_instance_name }}-process.conf
-        mode: 0644
+        mode: '644'
       notify: restart application process
       when: djsite_process_enabled|bool
 
@@ -138,7 +138,7 @@
       template:
         src: "{{ item.value.config_file|default('example.celery.worker.conf.j2') }}"
         dest: /etc/supervisor/conf.d/{{ djsite_instance_name }}-celery-{{ item.value.name }}.conf
-        mode: 0644
+        mode: '644'
       loop_control:
         label: '{{ item.value.name }}'
       notify: restart celery workers

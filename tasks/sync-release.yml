@@ -12,7 +12,7 @@
         name: '{{ djsite_release_directory }}'
         owner: '{{ djsite_daemon_user }}'
         group: '{{ djsite_daemon_group }}'
-        mode: 0755
+        mode: '755'
         state: directory
       when: not djsite_is_master|bool
 
