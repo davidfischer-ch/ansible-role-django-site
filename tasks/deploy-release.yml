@@ -83,7 +83,7 @@
             state: present
             umask: '{{ djsite_pip_umask }}'
             virtualenv: '{{ djsite_app_directory }}/test/venv'
-            virtualenv_python: '{{ djsite_python_executable }}'
+            virtualenv_command: '{{ djsite_python_executable }} -m venv'
           environment: '{{ djsite_pip_environment }}'
 
         - name: Find Application requirement files
@@ -108,7 +108,7 @@
             state: forcereinstall
             umask: '{{ djsite_pip_umask }}'
             virtualenv: '{{ djsite_app_directory }}/test/venv'
-            virtualenv_python: '{{ djsite_python_executable }}'
+            virtualenv_command: '{{ djsite_python_executable }} -m venv'
           environment: '{{ djsite_pip_environment }}'
           loop: '{{ _djsite_requirements.files }}'
           loop_control:
